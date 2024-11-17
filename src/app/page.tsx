@@ -12,7 +12,7 @@ export default function Home() {
           height={38}
           priority
         />
-        <h1 className="text-6xl font-bold mt-8 font-pirata">Desbravando o middleware do <span className="text-red-800">Next.js</span></h1>
+        <h1 className="text-6xl mt-8 font-pirata">Desbravando o middleware do <span className="text-red-800">Next.js</span></h1>
         <p className="text-xl">por Jorge Madson Santos Viana</p>
       </main>
       <footer className="mt-16 flex gap-6 flex-wrap items-center justify-center">

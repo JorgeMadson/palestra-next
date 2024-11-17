@@ -28,7 +28,7 @@ export default async function AuthPage() {
           <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-black" />
 
           <div className="bg-white p-8 border-2 border-black">
-            <h1 className="text-4xl font-bold mb-8 text-center font-pirata">
+            <h1 className="text-4xl mb-8 text-center font-pirata">
               Portal de Autenticação
             </h1>
 

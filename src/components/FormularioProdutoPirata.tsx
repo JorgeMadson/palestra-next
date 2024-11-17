@@ -49,6 +49,8 @@ export default function FormularioProduto() {
     setErro(null)
   }
 
+  // TODO: Terminar a subida das imagens
+
   return (
     <div className="max-w-2xl mx-auto mt-10 px-4">
       <div className="relative">
@@ -59,7 +61,7 @@ export default function FormularioProduto() {
         <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-black" />
         
         <form onSubmit={handleSubmit} className="bg-white p-8">
-          <h2 className="text-3xl font-bold mb-8 text-center font-pirata">
+          <h2 className="text-3xl mb-8 text-center font-pirata">
             Formulário de Produto
           </h2>
           
