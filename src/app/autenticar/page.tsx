@@ -52,7 +52,7 @@ export default async function AuthPage() {
               </button>
             </div>
             <br />
-            {/* <div className="text-center">
+            <div className="text-center">
               <button
                 onClick={deauthenticate}
                 className="bg-red-700 hover:bg-black text-white font-bold py-3 px-8 transition-colors duration-200"
@@ -61,7 +61,7 @@ export default async function AuthPage() {
               >
                 {hasCookie ? 'Remover autenticação' : 'Não autenticado'}
               </button>
-            </div> */}
+            </div>
           </div>
         </div>
       </div>
