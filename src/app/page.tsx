@@ -12,13 +12,13 @@ export default function Home() {
           height={38}
           priority
         />
-        <h1 className="text-4xl font-bold mt-8">Desbravando o middleware do Next.js</h1>
-        <p className="text-xl">Jorge Madson Santos Viana</p>
+        <h1 className="text-6xl font-bold mt-8 font-pirata">Desbravando o middleware do <span className="text-red-800">Next.js</span></h1>
+        <p className="text-xl">por Jorge Madson Santos Viana</p>
       </main>
       <footer className="mt-16 flex gap-6 flex-wrap items-center justify-center">
         <a
           className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="/teste"
+          href="/autenticar"
           rel="noopener noreferrer"
         >
           <Image
@@ -28,11 +28,11 @@ export default function Home() {
             width={16}
             height={16}
           />
-          Rápida introdução ao Next.js→
+          Autenticação →
         </a>
         <a
           className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="/teste"
+          href="/criar-produto"
           rel="noopener noreferrer"
         >
           <Image
@@ -42,7 +42,7 @@ export default function Home() {
             width={16}
             height={16}
           />
-          Direto pro middleware →
+          Cadastrar produto →
         </a>
       </footer>
     </div>
