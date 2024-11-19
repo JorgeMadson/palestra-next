@@ -7,7 +7,7 @@ async function authenticate() {
   cookieStore.set('auth', 'true', { maxAge: 3600 })
 }
 
-export async function deauthenticate() {
+async function deauthenticate() {
   "use server";
   (await cookies()).delete('auth')
 }
