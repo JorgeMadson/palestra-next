@@ -42,7 +42,7 @@ export default function FormularioProduto() {
       });
       const data = await response.json();
       if (data.url) {
-        return data.url;  // Retorna a URL da imagem
+        return data.url;
       } else {
         throw new Error('Erro ao fazer upload da imagem');
       }
@@ -64,20 +64,17 @@ export default function FormularioProduto() {
       return
     }
 
-    // Faz o upload da imagem e obtém a URL
     const imagemUrl = await uploadImagem(imagem);
-    if (!imagemUrl) return; // Se não conseguir, sai
+    if (!imagemUrl) return;
 
-    // Prepare product data
     const productData = {
       nome,
       descricao,
-      imagem: imagemUrl, // The URL of the uploaded image
-      preco: parseFloat(preco), // Ensure preco is a number
+      imagem: imagemUrl,
+      preco: parseFloat(preco),
     };
 
     try {
-      // Make the POST request to your API endpoint
       const response = await fetch('/api/products', {
         method: 'POST',
         headers: {
@@ -89,16 +86,14 @@ export default function FormularioProduto() {
       const data = await response.json();
 
       if (!response.ok) {
-        // If the response is not OK (status 2xx), show the error
         setErro(data.error || 'Erro ao cadastrar o produto');
       } else {
-        // If successful, reset form and show success
         console.log('Produto cadastrado:', data);
         setNome('');
         setDescricao('');
         setImagem(null);
         setPreviewUrl(null);
-        setErro(null);  // Clear error message
+        setErro(null);
       }
     } catch (error) {
       console.error('Error submitting the product:', error);
@@ -109,14 +104,13 @@ export default function FormularioProduto() {
   return (
     <div className="max-w-2xl mx-auto mt-10 px-4">
       <div className="relative">
-        {/* Decorative corners */}
+        {/* Cantos decorativos */}
         <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-black" />
         <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-black" />
         <div className="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-black" />
         <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-black" />
 
         <form onSubmit={handleSubmit} className="bg-white p-8">
-          {/* Formulário do Produto */}
           <h2 className="text-3xl mb-8 text-center font-pirata">Formulário de Produto</h2>
 
           {erro && (

@@ -3,9 +3,15 @@ import type { NextRequest } from 'next/server'
 
 export function middleware(request: NextRequest) {
 
+  /* TODO: Falta fazer 
+    1. Feature flag, 
+    2. Teste A/B para o formulário, com telefone e outro sem.
+  */
+
     // Exemplo: redirecionar usuários não autenticados
     const isAuthenticated = request.cookies.get('auth')?.value === "true";
 
+    // Poderia mandar para um serviço de log 
     console.log(`Exemplo de log do middleware! isAuthenticated: ${isAuthenticated}, ${new Date(Date.now()).toISOString().replace('T', ' ')}`);
 
     if (!isAuthenticated) {
