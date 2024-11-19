@@ -20,7 +20,7 @@ export function middleware(request: NextRequest) {
 
     if (!abTestCookie) {
       // Determine which version to show (30% chance for version B)
-      const showVersionB = Math.random() < 0.5;
+      const showVersionB = Math.random() < 0.3;
       const version = showVersionB ? 'B' : 'A';
 
       // Set the A/B test cookie

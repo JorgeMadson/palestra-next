@@ -1,20 +1,31 @@
 import { cookies } from 'next/headers'
+import { revalidatePath } from 'next/cache'
 
 async function authenticate() {
-  "use server";
-  const cookieStore = await cookies()
+  "use server"
+  const cookieStore =await  cookies()
   cookieStore.set('auth', 'true', { maxAge: 3600 })
+  revalidatePath('/autenticar')
 }
 
 async function deauthenticate() {
-  "use server";
-  (await cookies()).delete('auth')
+  "use server"
+  const cookieStore = await cookies()
+  cookieStore.delete('auth')
+  revalidatePath('/autenticar')
 }
 
+async function clearAbTestCookie() {
+  "use server"
+  const cookieStore = await cookies()
+  cookieStore.delete('ab-test-produtos')
+  revalidatePath('/autenticar')
+}
 
 export default async function AuthPage() {
-  const cookieStore = await cookies();
-  const hasCookie = cookieStore.has('auth');
+  const cookieStore = await cookies()
+  const isAuthenticated = cookieStore.has('auth')
+  const abTestVersion = cookieStore.has('auth') && cookieStore.get('ab-test-produtos')?.value
 
   return (
     <div className="min-h-screen bg-amber-50 flex items-center justify-center px-4">
@@ -35,32 +46,51 @@ export default async function AuthPage() {
               <p className="text-lg mb-4">
                 Status de Autenticação:
               </p>
-              <p className={`text-xl font-bold ${hasCookie ? 'text-green-700' : 'text-red-700'}`}>
-                {hasCookie ? 'Autenticado' : 'Não Autenticado'}
+              <p className={`text-xl font-bold ${isAuthenticated ? 'text-green-700' : 'text-red-700'}`}>
+                {isAuthenticated ? 'Autenticado' : 'Não Autenticado'}
               </p>
             </div>
 
-            <div className="text-center">
+            <form className="text-center mb-6">
               <button
-                onClick={authenticate}
+                formAction={authenticate}
                 className="bg-black hover:bg-red-700 text-white font-bold py-3 px-8 transition-colors duration-200"
-                aria-label={hasCookie ? "Já autenticado" : "Autenticar"}
-                disabled={hasCookie}
+                aria-label={isAuthenticated ? "Já autenticado" : "Autenticar"}
+                disabled={isAuthenticated}
               >
-                {hasCookie ? 'Já Autenticado' : 'Autenticar'}
+                {isAuthenticated ? 'Já Autenticado' : 'Autenticar'}
               </button>
-            </div>
-            <br />
-            <div className="text-center">
+            </form>
+
+            <form className="text-center mb-6">
               <button
-                onClick={deauthenticate}
+                formAction={deauthenticate}
                 className="bg-red-700 hover:bg-black text-white font-bold py-3 px-8 transition-colors duration-200"
-                aria-label={hasCookie ? "Já autenticado" : "Autenticar"}
-                disabled={!hasCookie}
+                aria-label={isAuthenticated ? "Remover autenticação" : "Não autenticado"}
+                disabled={!isAuthenticated}
               >
-                {hasCookie ? 'Remover autenticação' : 'Não autenticado'}
+                {isAuthenticated ? 'Remover autenticação' : 'Não autenticado'}
               </button>
+            </form>
+
+            {abTestVersion && <><div className="mb-6 text-center">
+              <p className="text-lg mb-4">
+                Versão A/B Test:
+              </p>
+              <p className="text-xl font-bold">
+                {abTestVersion || 'Não definido'}
+              </p>
             </div>
+
+            <form className="text-center">
+              <button
+                formAction={clearAbTestCookie}
+                className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 transition-colors duration-200"
+                aria-label="Limpar cookie A/B Test"
+              >
+                Limpar cookie A/B Test
+              </button>
+            </form></>}
           </div>
         </div>
       </div>
