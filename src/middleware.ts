@@ -1,58 +1,90 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
+const AUTHENTICATION_COOKIE = 'auth'
+const AB_TEST_COOKIE = 'ab-test-produtos'
+const CHAT_PATH = '/chat'
+const CREATE_PRODUCT_PATH = '/criar-produto'
+const CREATE_PRODUCT_B_PATH = '/criar-produto-b'
+const AUTH_PATH = '/autenticar'
+
 export function middleware(request: NextRequest) {
-  // Exemplo: redirecionar usuários não autenticados
-  const isAuthenticated = request.cookies.get('auth')?.value === "true";
+  logMiddlewareExecution(request)
 
-  // Nosso feature flag
-  const featureFlag = process.env.FEATURE_FLAG;
-  const isChat = request.nextUrl.pathname === '/chat';
-
-  // Poderia mandar para um serviço de log 
-  console.log(`Exemplo de log do middleware! isAuthenticated: ${isAuthenticated}, ${new Date(Date.now()).toISOString().replace('T', ' ')}`);
-
-  if (!isAuthenticated && !isChat) {
-    return NextResponse.redirect(new URL('/autenticar', request.url));
-  }
-
-  // Teste A/B  para página '/criar-produto'
-  if (request.nextUrl.pathname === '/criar-produto') {
-    const abTestCookie = request.cookies.get('ab-test-produtos');
-    console.log('entrou na /criar-produto olha o cookie:', abTestCookie);
-    const response = NextResponse.next();
-
-    if (!abTestCookie) {
-      // Determine which version to show (30% chance for version B)
-      const showVersionB = Math.random() < 0.3;
-      const version = showVersionB ? 'B' : 'A';
-
-      // Set the A/B test cookie
-      response.cookies.set('ab-test-produtos', version, {
-        maxAge: 60 * 60 * 24 * 7, // 1 week
-        path: '/',
-      });
-
-      // Redirect to the appropriate version
-      if (showVersionB) {
-        return NextResponse.redirect(new URL('/criar-produto-b', request.url));
-      }
-    } else if (abTestCookie.value === 'B') {
-      // Redirect to version B if the cookie is already set
-      return NextResponse.redirect(new URL('/criar-produto-b', request.url));
+  if (!isAuthenticated(request)) {
+    if (isChatPath(request)) {
+      return handleChatFeatureFlag(request)
     }
-
-    return response;
+    return redirectToAuth(request)
   }
 
-  if (isChat) {
-    console.log('entrou no /chat e tem o feture flag:',featureFlag);
-    if (!featureFlag) {
-      return NextResponse.redirect(new URL('/', request.url));
-    }
+  if (isCreateProductPath(request)) {
+    return handleCreateProductABTest(request)
   }
 
-  return NextResponse.next();
+  return NextResponse.next()
+}
+
+function isAuthenticated(request: NextRequest): boolean {
+  return request.cookies.get(AUTHENTICATION_COOKIE)?.value === "true"
+}
+
+function isChatPath(request: NextRequest): boolean {
+  return request.nextUrl.pathname === CHAT_PATH
+}
+
+function isCreateProductPath(request: NextRequest): boolean {
+  return request.nextUrl.pathname === CREATE_PRODUCT_PATH
+}
+
+function logMiddlewareExecution(request: NextRequest): void {
+  console.log(`Middleware executed: isAuthenticated: ${isAuthenticated(request)}, ${new Date().toISOString().replace('T', ' ')}`)
+}
+
+function redirectToAuth(request: NextRequest): NextResponse {
+  return NextResponse.redirect(new URL(AUTH_PATH, request.url))
+}
+
+function handleChatFeatureFlag(request: NextRequest): NextResponse | undefined {
+  const featureFlag = process.env.FEATURE_FLAG
+  console.log('Accessed /chat. Feature flag:', featureFlag)
+
+  if (!featureFlag) {
+    return NextResponse.redirect(new URL('/', request.url))
+  }
+}
+
+function handleCreateProductABTest(request: NextRequest): NextResponse {
+  const abTestCookie = request.cookies.get(AB_TEST_COOKIE)
+  console.log('Accessed /criar-produto. AB test cookie:', abTestCookie)
+
+  if (!abTestCookie) {
+    return setNewABTestCookie(request)
+  }
+
+  if (abTestCookie.value === 'B') {
+    return redirectToVersionB(request)
+  }
+
+  return NextResponse.next()
+}
+
+function setNewABTestCookie(request: NextRequest): NextResponse {
+  const showVersionB = Math.random() < 0.3
+  const version = showVersionB ? 'B' : 'A'
+
+  const response = showVersionB ? redirectToVersionB(request) : NextResponse.next()
+
+  response.cookies.set(AB_TEST_COOKIE, version, {
+    maxAge: 60 * 60 * 24 * 7, // 1 week
+    path: '/',
+  })
+
+  return response
+}
+
+function redirectToVersionB(request: NextRequest): NextResponse {
+  return NextResponse.redirect(new URL(CREATE_PRODUCT_B_PATH, request.url))
 }
 
 export const config = {
