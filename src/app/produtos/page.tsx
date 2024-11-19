@@ -4,8 +4,8 @@ import Image from "next/image";
 type Product = {
   id: number;
   nome: string;
-  telefone: string;
-  descricao: string;
+  telefone?: string;
+  descricao?: string;
   imagem: string;
   preco: number;
 };
@@ -61,7 +61,7 @@ export default async function ProductCatalog(): Promise<JSX.Element> {
               </p>
               
               <p className="text-gray-700 mb-2">
-                <span className="font-bold">Preço:</span> R$ {product.preco.toFixed(2)}
+                <span className="font-bold">Preço:</span> R$ {product.preco}
               </p>
               
               <p className="text-gray-700">
