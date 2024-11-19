@@ -7,9 +7,9 @@ export default function FormularioProduto() {
   const [nome, setNome] = useState('')
   const [descricao, setDescricao] = useState('')
   const [imagem, setImagem] = useState<File | null>(null)
+  const [preco, setPreco] = useState('50')
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
   const [erro, setErro] = useState<string | null>(null)
-  const [preco, setPreco] = useState('50')
 
   const handleNomeChange = (e: ChangeEvent<HTMLInputElement>) => {
     setNome(e.target.value)
@@ -73,7 +73,7 @@ export default function FormularioProduto() {
           
           <div className="mb-6">
             <label 
-              className="block text-black font-bold mb-2 [font-family:MedievalSharp,cursive]" 
+              className="block text-black font-bold mb-2" 
               htmlFor="nome"
             >
               Nome do Produto
@@ -91,7 +91,7 @@ export default function FormularioProduto() {
           
           <div className="mb-6">
             <label 
-              className="block text-black font-bold mb-2 [font-family:MedievalSharp,cursive]" 
+              className="block text-black font-bold mb-2" 
               htmlFor="descricao"
             >
               Descrição (Opcional)
@@ -108,7 +108,7 @@ export default function FormularioProduto() {
           
           <div className="mb-6">
             <label 
-              className="block text-black font-bold mb-2 [font-family:MedievalSharp,cursive]" 
+              className="block text-black font-bold mb-2" 
               htmlFor="preco"
             >
               Preço do Produto
@@ -129,7 +129,7 @@ export default function FormularioProduto() {
 
           <div className="mb-6">
             <label 
-              className="block text-black font-bold mb-2 [font-family:MedievalSharp,cursive]" 
+              className="block text-black font-bold mb-2" 
               htmlFor="imagem"
             >
               Imagem do Produto
@@ -160,7 +160,7 @@ export default function FormularioProduto() {
           
           <div className="text-center">
             <button
-              className="bg-black hover:bg-red-700 text-white font-bold py-3 px-8 transition-colors duration-200 [font-family:MedievalSharp,cursive]"
+              className="bg-black hover:bg-red-700 text-white font-bold py-3 px-8 transition-colors duration-200"
               type="submit"
             >
               Cadastrar Produto
