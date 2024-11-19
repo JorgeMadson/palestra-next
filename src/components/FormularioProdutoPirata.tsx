@@ -33,13 +33,18 @@ export default function FormularioProduto() {
 
   const uploadImagem = async (file: File) => {
     const formData = new FormData();
-    formData.append('imagem', file);
+    formData.append('file', file);
 
     try {
-      const response = await fetch(`/api/images/upload?filename=${file.name}`, {
+      const response = await fetch(`/api/images/upload?filename=${encodeURIComponent(file.name)}`, {
         method: 'POST',
         body: formData,
       });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
       const data = await response.json();
       if (data.url) {
         return data.url;
@@ -47,7 +52,7 @@ export default function FormularioProduto() {
         throw new Error('Erro ao fazer upload da imagem');
       }
     } catch (error) {
-      console.error(error);
+      console.error('Error uploading image:', error);
       setErro('Erro ao fazer upload da imagem');
       return null;
     }
@@ -83,18 +88,17 @@ export default function FormularioProduto() {
         body: JSON.stringify(productData),
       });
 
-      const data = await response.json();
-
       if (!response.ok) {
-        setErro(data.error || 'Erro ao cadastrar o produto');
-      } else {
-        console.log('Produto cadastrado:', data);
-        setNome('');
-        setDescricao('');
-        setImagem(null);
-        setPreviewUrl(null);
-        setErro(null);
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
+
+      const data = await response.json();
+      console.log('Produto cadastrado:', data);
+      setNome('');
+      setDescricao('');
+      setImagem(null);
+      setPreviewUrl(null);
+      setErro(null);
     } catch (error) {
       console.error('Error submitting the product:', error);
       setErro('Ocorreu um erro ao cadastrar o produto.');
