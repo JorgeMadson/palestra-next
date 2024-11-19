@@ -79,7 +79,7 @@ function setNewABTestCookie(request: NextRequest): NextResponse {
     maxAge: 60 * 60 * 24 * 7, // 1 week
     path: '/',
   })
-
+  // comentário
   return response
 }
 
