@@ -23,13 +23,14 @@ export default function Home() {
         >
           <Image
             aria-hidden
-            src="/file.svg"
+            src="/auth.svg"
             alt="File icon"
             width={16}
             height={16}
           />
           Autenticação &rarr;
         </a>
+        
         <a
           className="flex items-center gap-2 hover:underline hover:underline-offset-4"
           href="/criar-produto"
@@ -43,6 +44,20 @@ export default function Home() {
             height={16}
           />
           Cadastrar produto &rarr;
+        </a>
+        <a
+          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
+          href="/produtos"
+          rel="noopener noreferrer"
+        >
+          <Image
+            aria-hidden
+            src="/box.svg"
+            alt="Globe icon"
+            width={16}
+            height={16}
+          />
+          Ver todos produto &rarr;
         </a>
       </footer>
     </div>
