@@ -28,7 +28,7 @@ export default function Home() {
             width={16}
             height={16}
           />
-          Autenticação →
+          Autenticação &rarr;
         </a>
         <a
           className="flex items-center gap-2 hover:underline hover:underline-offset-4"
@@ -42,7 +42,7 @@ export default function Home() {
             width={16}
             height={16}
           />
-          Cadastrar produto →
+          Cadastrar produto &rarr;
         </a>
       </footer>
     </div>
