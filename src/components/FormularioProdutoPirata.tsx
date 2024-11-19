@@ -31,7 +31,29 @@ export default function FormularioProduto() {
     setPreco(e.target.value)
   }
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const uploadImagem = async (file: File) => {
+    const formData = new FormData();
+    formData.append('imagem', file);
+
+    try {
+      const response = await fetch(`/api/images/upload?filename=${file.name}`, {
+        method: 'POST',
+        body: formData,
+      });
+      const data = await response.json();
+      if (data.url) {
+        return data.url;  // Retorna a URL da imagem
+      } else {
+        throw new Error('Erro ao fazer upload da imagem');
+      }
+    } catch (error) {
+      console.error(error);
+      setErro('Erro ao fazer upload da imagem');
+      return null;
+    }
+  }
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (!nome.trim()) {
       setErro('O nome do produto é obrigatório')
@@ -41,15 +63,48 @@ export default function FormularioProduto() {
       setErro('A imagem do produto é obrigatória')
       return
     }
-    console.log('Enviando:', { nome, descricao, imagem, preco })
-    setNome('')
-    setDescricao('')
-    setImagem(null)
-    setPreviewUrl(null)
-    setErro(null)
-  }
 
-  // TODO: Terminar a subida das imagens
+    // Faz o upload da imagem e obtém a URL
+    const imagemUrl = await uploadImagem(imagem);
+    if (!imagemUrl) return; // Se não conseguir, sai
+
+    // Prepare product data
+    const productData = {
+      nome,
+      descricao,
+      imagem: imagemUrl, // The URL of the uploaded image
+      preco: parseFloat(preco), // Ensure preco is a number
+    };
+
+    try {
+      // Make the POST request to your API endpoint
+      const response = await fetch('/api/products', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(productData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        // If the response is not OK (status 2xx), show the error
+        setErro(data.error || 'Erro ao cadastrar o produto');
+      } else {
+        // If successful, reset form and show success
+        console.log('Produto cadastrado:', data);
+        setNome('');
+        setDescricao('');
+        setImagem(null);
+        setPreviewUrl(null);
+        setErro(null);  // Clear error message
+      }
+    } catch (error) {
+      console.error('Error submitting the product:', error);
+      setErro('Ocorreu um erro ao cadastrar o produto.');
+    }
+  }
 
   return (
     <div className="max-w-2xl mx-auto mt-10 px-4">
@@ -59,62 +114,46 @@ export default function FormularioProduto() {
         <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-black" />
         <div className="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-black" />
         <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-black" />
-        
+
         <form onSubmit={handleSubmit} className="bg-white p-8">
-          <h2 className="text-3xl mb-8 text-center font-pirata">
-            Formulário de Produto
-          </h2>
-          
+          {/* Formulário do Produto */}
+          <h2 className="text-3xl mb-8 text-center font-pirata">Formulário de Produto</h2>
+
           {erro && (
             <p className="text-red-700 text-sm text-center mb-4 font-medium border border-red-700 py-2">
               {erro}
             </p>
           )}
-          
+
           <div className="mb-6">
-            <label 
-              className="block text-black font-bold mb-2" 
-              htmlFor="nome"
-            >
-              Nome do Produto
-            </label>
+            <label className="block text-black font-bold mb-2" htmlFor="nome">Nome do Produto</label>
             <input
-              className="w-full px-4 py-2 border-2 border-black bg-white focus:outline-none focus:ring-2 focus:ring-red-700"
+              className="w-full px-4 py-2 border-2 border-black"
               id="nome"
               type="text"
-              placeholder="Vai ser usar para gerar o slug da url"
+              placeholder="Nome do Produto"
               value={nome}
               onChange={handleNomeChange}
               required
             />
           </div>
-          
+
           <div className="mb-6">
-            <label 
-              className="block text-black font-bold mb-2" 
-              htmlFor="descricao"
-            >
-              Descrição (Opcional)
-            </label>
+            <label className="block text-black font-bold mb-2" htmlFor="descricao">Descrição (Opcional)</label>
             <textarea
-              className="w-full px-4 py-2 border-2 border-black bg-white focus:outline-none focus:ring-2 focus:ring-red-700"
+              className="w-full px-4 py-2 border-2 border-black"
               id="descricao"
-              placeholder="Siga seu coração pode escrever o que quiser ou até não escrever nada"
+              placeholder="Descrição do Produto"
               value={descricao}
               onChange={handleDescricaoChange}
               rows={4}
             />
           </div>
-          
+
           <div className="mb-6">
-            <label 
-              className="block text-black font-bold mb-2" 
-              htmlFor="preco"
-            >
-              Preço do Produto
-            </label>
+            <label className="block text-black font-bold mb-2" htmlFor="preco">Preço do Produto</label>
             <input
-              className="w-full py-2 border-2 border-black bg-white focus:outline-none focus:ring-2 focus:ring-red-700"
+              className="w-full py-2 border-2 border-black"
               id="preco"
               type="range"
               min="0"
@@ -122,20 +161,13 @@ export default function FormularioProduto() {
               value={preco}
               onChange={handlePrecoChange}
             />
-            <div className="mt-2 text-center font-bold">
-              Preço: R$ {preco},00
-            </div>
+            <div className="mt-2 text-center font-bold">Preço: R$ {preco},00</div>
           </div>
 
           <div className="mb-6">
-            <label 
-              className="block text-black font-bold mb-2" 
-              htmlFor="imagem"
-            >
-              Imagem do Produto
-            </label>
+            <label className="block text-black font-bold mb-2" htmlFor="imagem">Imagem do Produto</label>
             <input
-              className="w-full px-4 py-2 border-2 border-black bg-white focus:outline-none focus:ring-2 focus:ring-red-700"
+              className="w-full px-4 py-2 border-2 border-black"
               id="imagem"
               type="file"
               accept="image/*"
@@ -143,7 +175,7 @@ export default function FormularioProduto() {
               required
             />
           </div>
-          
+
           {previewUrl && (
             <div className="mb-6">
               <div className="border-2 border-black p-2">
@@ -157,10 +189,10 @@ export default function FormularioProduto() {
               </div>
             </div>
           )}
-          
+
           <div className="text-center">
             <button
-              className="bg-black hover:bg-red-700 text-white font-bold py-3 px-8 transition-colors duration-200"
+              className="bg-black hover:bg-red-700 text-white font-bold py-3 px-8"
               type="submit"
             >
               Cadastrar Produto
@@ -169,5 +201,5 @@ export default function FormularioProduto() {
         </form>
       </div>
     </div>
-  )
+  );
 }
