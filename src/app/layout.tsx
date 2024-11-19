@@ -29,8 +29,8 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+      <Link className="text-3xl font-bold my-8 font-pirata underline" href="/">Página inicial</Link>
         {children}
-      <Link className="text-3xl font-bold my-8 font-pirata underline" href="/">Voltar para página inicial</Link>
 
       </body>
     </html>
