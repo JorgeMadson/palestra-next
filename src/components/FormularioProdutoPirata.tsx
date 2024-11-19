@@ -3,10 +3,11 @@
 import { useState, FormEvent, ChangeEvent } from 'react'
 import Image from 'next/image'
 
-export default function FormularioProduto() {
+export default function FormularioProduto({ showPhoneField = false }: { showPhoneField?: boolean }) {
   const [nome, setNome] = useState('')
   const [descricao, setDescricao] = useState('')
   const [imagem, setImagem] = useState<File | null>(null)
+  const [telefone, setTelefone] = useState('')
   const [preco, setPreco] = useState('50')
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
   const [erro, setErro] = useState<string | null>(null)
@@ -161,7 +162,19 @@ export default function FormularioProduto() {
             />
             <div className="mt-2 text-center font-bold">Preço: R$ {preco},00</div>
           </div>
-
+          {showPhoneField && (
+          <div className="mb-6">
+            <label className="block text-black font-bold mb-2" htmlFor="telefone">Telefone para contato</label>
+            <input
+              className="w-full px-4 py-2 border-2 border-black"
+              id="telefone"
+              type="tel"
+              placeholder="(00) 00000-0000"
+              value={telefone}
+              onChange={(e) => setTelefone(e.target.value)}
+            />
+          </div>
+        )}
           <div className="mb-6">
             <label className="block text-black font-bold mb-2" htmlFor="imagem">Imagem do Produto</label>
             <input
