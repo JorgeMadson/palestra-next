@@ -1,5 +1,7 @@
 import Image from "next/image";
 
+const featureFlag = process.env.FEATURE_FLAG;
+
 export default function Home() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-8 font-[family-name:var(--font-geist-sans)]">
@@ -59,6 +61,20 @@ export default function Home() {
           />
           Ver todos produto &rarr;
         </a>
+        {featureFlag && <a
+          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
+          href="/chat"
+          rel="noopener noreferrer"
+        >
+          <Image
+            aria-hidden
+            src="/box.svg"
+            alt="Globe icon"
+            width={16}
+            height={16}
+          />
+          Chat com IA &rarr;
+        </a>}
       </footer>
     </div>
   );

@@ -5,10 +5,14 @@ export function middleware(request: NextRequest) {
   // Exemplo: redirecionar usuários não autenticados
   const isAuthenticated = request.cookies.get('auth')?.value === "true";
 
+  // Nosso feature flag
+  const featureFlag = process.env.FEATURE_FLAG;
+  const isChat = request.nextUrl.pathname === '/chat';
+
   // Poderia mandar para um serviço de log 
   console.log(`Exemplo de log do middleware! isAuthenticated: ${isAuthenticated}, ${new Date(Date.now()).toISOString().replace('T', ' ')}`);
 
-  if (!isAuthenticated) {
+  if (!isAuthenticated && !isChat) {
     return NextResponse.redirect(new URL('/autenticar', request.url));
   }
 
@@ -41,9 +45,16 @@ export function middleware(request: NextRequest) {
     return response;
   }
 
+  if (isChat) {
+    console.log('entrou no /chat e tem o feture flag:',featureFlag);
+    if (!featureFlag) {
+      return NextResponse.redirect(new URL('/', request.url));
+    }
+  }
+
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ['/criar-produto/:path*', '/produtos/:path*', '/criar-produto-b/:path*'],
+  matcher: ['/criar-produto/:path*', '/produtos/:path*', '/criar-produto-b/:path*', '/chat'],
 }
