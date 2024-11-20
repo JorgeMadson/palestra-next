@@ -2,6 +2,9 @@
 
 Projeto feito para explicar um pouco como funciona algumas funcionalidades do Next.js e o seu middleware
 
+[Palestra no google docs](https://docs.google.com/presentation/d/1pmGMmzPeQxMpt7m1QQGKlyBktvChiMgzw5dBoxgdSKk/edit?usp=sharing
+).
+
 ## Estrutura
 ```
 ├───public (arquivos que vão ser servidos no /)
